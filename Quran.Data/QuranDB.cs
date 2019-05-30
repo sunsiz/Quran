@@ -62,6 +62,12 @@ namespace Quran.Data
                 da = new OleDbDataAdapter("SELECT * FROM quran WHERE (easy_bn_trans LIKE '%" + searchTerm + "%' " + searchIn + " ) ORDER BY ID;", cnn);
                 da.Fill(dt);
             }
+
+            if (dt.Rows.Count == 0)
+            {
+                da = new OleDbDataAdapter("SELECT * FROM quran WHERE (easy_ug_trans LIKE '%" + searchTerm + "%' " + searchIn + " ) ORDER BY ID;", cnn);
+                da.Fill(dt);
+            }
             cnn.Close();
 
             return dt;

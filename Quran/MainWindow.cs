@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
@@ -20,11 +21,11 @@ namespace Quran
 
         string strSelAyahId;
 
-        string quranBgColor;
-        string quranBorderColor;
-        string quranSelColor;
+        string kuranBgColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBgColor", "#D3E9D3").ToString();
+        string kuranBorderColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBorderColor", "#628F62").ToString();
+        string kuranSelColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranSelColor", "darkgreen").ToString();
 
-        string strLanguages = "True_True_False";
+        string strLanguages = "True_True_True_False";
 
         public MainWindow()
         {
@@ -37,23 +38,27 @@ namespace Quran
             for (int i = 0; i <= QuranData.Metadata.Sura.Length - 1; i++)
             {
                 comboBoxSura.Items.Add((i + 1) + ". " + QuranData.Metadata.Sura[i].TName);
+                listBox1.Items.Add((i + 1) + "." + QuranData.Metadata.Sura[i].TName);
             }
 
-            quranBgColor = "#D3E9D3";
-            quranBorderColor = "#628F62";
-            quranSelColor = "darkgreen";
+            //kuranBgColor = "#D3E9D3";
+            //kuranBorderColor = "#628F62";
+            //kuranSelColor = "darkgreen";
+            BackColor = ColorTranslator.FromHtml(kuranBgColor);
             groupBox1_Resize(sender, e);
 
-            checkedListBox1.SetItemChecked(0, true);
-            checkedListBox1.SetItemChecked(1, true);
+            //checkedListBox1.SetItemChecked(0, true);
+            //checkedListBox1.SetItemChecked(3, true);
 
             try
             {
-                comboBoxSura.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentSura", 0).GetHashCode();
+                comboBoxSura.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
+                listBox1.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
             }
             catch
             {
                 comboBoxSura.SelectedIndex = 0;
+                listBox1.SelectedIndex = 0;
             }
         }
 
@@ -123,10 +128,10 @@ namespace Quran
             if (AyahNo <= 0) AyahNo = 1;
             if (!webBrowser1.IsBusy)
             {
-                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + quranBorderColor; //restore old selected ayah in browser
+                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranBorderColor; //restore old selected ayah in browser
 
                 strSelAyahId = "tdAyahNo" + (comboBoxSura.SelectedIndex + 1).ToString() + "_" + (AyahNo).ToString();
-                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + quranSelColor + @"; color:white; font-weight:bold;"; //select ayah in browser
+                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranSelColor + @"; color:white; font-weight:bold;"; //select ayah in browser
                 if (AyahNo != 1)
                     webBrowser1.Document.Window.ScrollTo(0, webBrowser1.Document.GetElementById(strSelAyahId).OffsetRectangle.Top - 50); //scroll to selected ayah
                 else
@@ -212,30 +217,30 @@ namespace Quran
         private void comboBoxColor_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            switch (comboBoxColor.Text)
-            {
-                case "Green":
-                    quranBgColor = "#D3E9D3";
-                    quranBorderColor = "#628F62";
-                    quranSelColor = "darkgreen";
-                    break;
-                case "Rose":
-                    quranBgColor = "#FFE4E1";
-                    quranBorderColor = "#BC8F8F";
-                    quranSelColor = "maroon";
-                    break;
-                case "Blue":
-                    quranBgColor = "#CCCCFF";
-                    quranBorderColor = "#336699";
-                    quranSelColor = "#0000CC";
-                    break;
-                case "Gray":
-                    quranBgColor = "#CCCCCC";
-                    quranBorderColor = "#777777";
-                    quranSelColor = "#555555";
-                    break;
+            //switch (comboBoxColor.Text)
+            //{
+            //    case "Green":
+            //        kuranBgColor = "#D3E9D3";
+            //        kuranBorderColor = "#628F62";
+            //        kuranSelColor = "darkgreen";
+            //        break;
+            //    case "Rose":
+            //        kuranBgColor = "#FFE4E1";
+            //        kuranBorderColor = "#BC8F8F";
+            //        kuranSelColor = "maroon";
+            //        break;
+            //    case "Blue":
+            //        kuranBgColor = "#CCCCFF";
+            //        kuranBorderColor = "#336699";
+            //        kuranSelColor = "#0000CC";
+            //        break;
+            //    case "Gray":
+            //        kuranBgColor = "#CCCCCC";
+            //        kuranBorderColor = "#777777";
+            //        kuranSelColor = "#555555";
+            //        break;
 
-            }
+            //}
             Load_Document();
 
             setSelectedAyah(comboBoxAya.Text.GetHashCode());
@@ -249,19 +254,19 @@ namespace Quran
             panel2.Left = panel1.Width + panel1.Left * 2;
             groupBox1.Refresh();
             groupBox2.Refresh();
-            groupBox3.Refresh();
-            groupBox4.Refresh();
+            //groupBox3.Refresh();
+            //groupBox4.Refresh();
 
         }
 
         private void checkedListBox1_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (strLanguages != checkedListBox1.GetItemChecked(0).ToString() + "_" + checkedListBox1.GetItemChecked(1).ToString() + "_" + checkedListBox1.GetItemChecked(2).ToString())
-            {
-                CreateDocument(comboBoxSura.SelectedIndex + 1);
-                strLanguages = checkedListBox1.GetItemChecked(0).ToString() + "_" + checkedListBox1.GetItemChecked(1).ToString() + "_" + checkedListBox1.GetItemChecked(2).ToString();
+            //if (strLanguages != checkedListBox1.GetItemChecked(0).ToString() + "_" + checkedListBox1.GetItemChecked(1).ToString() + "_" + checkedListBox1.GetItemChecked(2).ToString())
+            //{
+            //    CreateDocument(comboBoxSura.SelectedIndex + 1);
+            //    strLanguages = checkedListBox1.GetItemChecked(0).ToString() + "_" + checkedListBox1.GetItemChecked(1).ToString() + "_" + checkedListBox1.GetItemChecked(2).ToString();
 
-            }
+            //}
 
         }
 
@@ -446,5 +451,16 @@ namespace Quran
 
         }
 
+        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Settings().ShowDialog();
+            Load_Document();
+            setSelectedAyah(comboBoxAya.Text.GetHashCode());
+        }
+
+        private void FindToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new Find().ShowDialog();
+        }
     }
 }
