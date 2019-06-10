@@ -15,17 +15,18 @@ namespace Quran
         QuranData QuranData = new QuranData();
 
         int i = 0;
-        int k;
+        //int k;
         bool isPlaying = false;
-        int curAyaIndex = 0;
+        //int curAyaIndex = 0;
 
         string strSelAyahId;
 
         string kuranBgColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBgColor", "#D3E9D3").ToString();
         string kuranBorderColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBorderColor", "#628F62").ToString();
         string kuranSelColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranSelColor", "darkgreen").ToString();
+        string kuranForeColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranForeColor", "Black").ToString();
 
-        string strLanguages = "True_True_True_False";
+        //string strLanguages = "True_True_True_False";
 
         public MainWindow()
         {
@@ -37,14 +38,20 @@ namespace Quran
 
             for (int i = 0; i <= QuranData.Metadata.Sura.Length - 1; i++)
             {
-                comboBoxSura.Items.Add((i + 1) + ". " + QuranData.Metadata.Sura[i].TName);
-                listBox1.Items.Add((i + 1) + "." + QuranData.Metadata.Sura[i].TName);
+                //comboBoxSura.Items.Add((i + 1) + ". " + QuranData.Metadata.Sura[i].TName);
+                SureListBox.Items.Add((i + 1) + "." + QuranData.Metadata.Sura[i].TName + " - " + QuranData.Metadata.Sura[i].Name);
             }
 
             //kuranBgColor = "#D3E9D3";
             //kuranBorderColor = "#628F62";
             //kuranSelColor = "darkgreen";
-            BackColor = ColorTranslator.FromHtml(kuranBgColor);
+            ApplyTheme();
+
+            //Make control transparent.
+            //this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            //this.TransparencyKey = Color.FromKnownColor(KnownColor.Control);
+            //this.Update();
+
             groupBox1_Resize(sender, e);
 
             //checkedListBox1.SetItemChecked(0, true);
@@ -52,13 +59,13 @@ namespace Quran
 
             try
             {
-                comboBoxSura.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
-                listBox1.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
+                //comboBoxSura.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
+                SureListBox.SelectedIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", 0).GetHashCode();
             }
             catch
             {
-                comboBoxSura.SelectedIndex = 0;
-                listBox1.SelectedIndex = 0;
+                //comboBoxSura.SelectedIndex = 0;
+                SureListBox.SelectedIndex = 0;
             }
         }
 
@@ -67,9 +74,9 @@ namespace Quran
             if (webBrowser1.DocumentText != "")
                 webBrowser1.Document.InvokeScript("goWaitState");
 
-            strSelAyahId = "tdAyahNo" + (comboBoxSura.SelectedIndex + 1).ToString() + "_1";
+            //strSelAyahId = "tdAyahNo" + (comboBoxSura.SelectedIndex + 1).ToString() + "_1";
+            strSelAyahId = "tdAyahNo" + (SureListBox.SelectedIndex + 1).ToString() + "_1";
             timerLoadDocument.Enabled = true;
-
         }
 
         private void comboBoxSura_SelectedIndexChanged(object sender, EventArgs e)
@@ -81,15 +88,15 @@ namespace Quran
             //timerLoadDocument.Enabled = true;
             Load_Document();
 
-            comboBoxAya.Items.Clear();
+            //comboBoxAya.Items.Clear();
 
-            for (k = 1; k <= QuranData.Metadata.Sura[comboBoxSura.SelectedIndex].AyatCount; k++)
-                comboBoxAya.Items.Add(k);
+            //for (k = 1; k <= QuranData.Metadata.Sura[comboBoxSura.SelectedIndex].AyatCount; k++)
+            //    comboBoxAya.Items.Add(k);
 
-            comboBoxRuku.Items.Clear();
+            //comboBoxRuku.Items.Clear();
 
-            for (k = 1; k <= QuranData.Metadata.Sura[comboBoxSura.SelectedIndex].Rukus; k++)
-                comboBoxRuku.Items.Add(k);
+            //for (k = 1; k <= QuranData.Metadata.Sura[comboBoxSura.SelectedIndex].Rukus; k++)
+            //    comboBoxRuku.Items.Add(k);
 
 
         }
@@ -118,20 +125,20 @@ namespace Quran
 
         private void comboBoxAya_SelectedIndexChanged(object sender, EventArgs e)
         {
-            btnNextAya.Enabled = comboBoxAya.SelectedIndex < comboBoxAya.Items.Count - 1;
-            btnPrevAya.Enabled = comboBoxAya.SelectedIndex > 0;
+            //btnNextAya.Enabled = comboBoxAya.SelectedIndex < comboBoxAya.Items.Count - 1;
+            //btnPrevAya.Enabled = comboBoxAya.SelectedIndex > 0;
 
-            setSelectedAyah(comboBoxAya.SelectedIndex + 1);
+            //setSelectedAyah(comboBoxAya.SelectedIndex + 1);
         }
         private void setSelectedAyah(int AyahNo)
         {
             if (AyahNo <= 0) AyahNo = 1;
             if (!webBrowser1.IsBusy)
             {
-                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranBorderColor; //restore old selected ayah in browser
+                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranBorderColor + @";color:" + kuranForeColor; //restore old selected ayah in browser
 
-                strSelAyahId = "tdAyahNo" + (comboBoxSura.SelectedIndex + 1).ToString() + "_" + (AyahNo).ToString();
-                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranSelColor + @"; color:white; font-weight:bold;"; //select ayah in browser
+                strSelAyahId = "tdAyahNo" + (SureListBox.SelectedIndex + 1).ToString() + "_" + (AyahNo).ToString();
+                webBrowser1.Document.GetElementById(strSelAyahId).Style = "background-color:" + kuranSelColor + @"; color:" + kuranForeColor + @"; font-weight:bold;"; //select ayah in browser
                 if (AyahNo != 1)
                     webBrowser1.Document.Window.ScrollTo(0, webBrowser1.Document.GetElementById(strSelAyahId).OffsetRectangle.Top - 50); //scroll to selected ayah
                 else
@@ -143,8 +150,8 @@ namespace Quran
 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
-            if (isPlaying == true && axWMP.playState == WMPLib.WMPPlayState.wmppsStopped)
-                timerPlayback.Enabled = true;
+            //if (isPlaying == true && axWMP.playState == WMPLib.WMPPlayState.wmppsStopped)
+            //    timerPlayback.Enabled = true;
         }
 
 
@@ -152,28 +159,28 @@ namespace Quran
         {
             timerPlayback.Enabled = false;
 
-            if (comboBoxAya.SelectedIndex >= comboBoxAya.Items.Count - 1)
-                return;
+            //if (comboBoxAya.SelectedIndex >= comboBoxAya.Items.Count - 1)
+            //    return;
 
-            comboBoxAya.SelectedIndex += 1;
+            //comboBoxAya.SelectedIndex += 1;
 
-            int intSuraNo = comboBoxSura.SelectedIndex + 1;
-            string strSuraNo = intSuraNo < 10 ?
-                        strSuraNo = "00" + intSuraNo.ToString() : intSuraNo < 100 ?
-                            strSuraNo = "0" + intSuraNo.ToString() : strSuraNo = intSuraNo.ToString();
+            //int intSuraNo = comboBoxSura.SelectedIndex + 1;
+            //string strSuraNo = intSuraNo < 10 ?
+            //            strSuraNo = "00" + intSuraNo.ToString() : intSuraNo < 100 ?
+            //                strSuraNo = "0" + intSuraNo.ToString() : strSuraNo = intSuraNo.ToString();
 
-            int intAyaNo = comboBoxAya.SelectedIndex + 1;
-            string strAyaNo = intAyaNo < 10 ?
-                        strAyaNo = "00" + intAyaNo.ToString() : intAyaNo < 100 ?
-                            strAyaNo = "0" + intAyaNo.ToString() : strAyaNo = intAyaNo.ToString();
+            //int intAyaNo = comboBoxAya.SelectedIndex + 1;
+            //string strAyaNo = intAyaNo < 10 ?
+            //            strAyaNo = "00" + intAyaNo.ToString() : intAyaNo < 100 ?
+            //                strAyaNo = "0" + intAyaNo.ToString() : strAyaNo = intAyaNo.ToString();
 
-            //axWMP.URL = @"G:\Quran Recitation\afasy-64kbps-offline.recit\afasy-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
-            if (comboBoxReciter.Text == "Mishari Rashid Bin Alafasy")
-                axWMP.URL = @"G:\Quran Recitation\afasy-64kbps-offline.recit\afasy-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
-            else if (comboBoxReciter.Text == "Abdul Basit")
-                axWMP.URL = Application.StartupPath + @"\Recitations\abdulbasit-mujawwad-64kbps-offline.recit\abdulbasit-mujawwad-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
+            ////axWMP.URL = @"G:\Quran Recitation\afasy-64kbps-offline.recit\afasy-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
+            //if (comboBoxReciter.Text == "Mishari Rashid Bin Alafasy")
+            //    axWMP.URL = @"G:\Quran Recitation\afasy-64kbps-offline.recit\afasy-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
+            //else if (comboBoxReciter.Text == "Abdul Basit")
+            //    axWMP.URL = Application.StartupPath + @"\Recitations\abdulbasit-mujawwad-64kbps-offline.recit\abdulbasit-mujawwad-64kbps-offline\" + strSuraNo + "\\" + strSuraNo + strAyaNo + ".mp3";
 
-            axWMP.Ctlcontrols.play();
+            //axWMP.Ctlcontrols.play();
 
         }
 
@@ -181,36 +188,38 @@ namespace Quran
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if (curAyaIndex == 0)
-            {
-                curAyaIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentAyah", 0).GetHashCode();
-                comboBoxAya.SelectedIndex = curAyaIndex;
-            }
-            else comboBoxAya.SelectedIndex = 0;
+            //if (curAyaIndex == 0)
+            //{
+            //    curAyaIndex = Registry.GetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentAyah", 0).GetHashCode();
+            //    comboBoxAya.SelectedIndex = curAyaIndex;
+            //}
+            //else comboBoxAya.SelectedIndex = 0;
 
         }
 
         private void btnNextSura_Click(object sender, EventArgs e)
         {
-            if (comboBoxSura.SelectedIndex < comboBoxSura.Items.Count - 1) comboBoxSura.SelectedIndex += 1;
+            //if (comboBoxSura.SelectedIndex < comboBoxSura.Items.Count - 1) comboBoxSura.SelectedIndex += 1;
+            if (SureListBox.SelectedIndex < SureListBox.Items.Count - 1) SureListBox.SelectedIndex += 1;
 
         }
 
         private void btnPrevSura_Click(object sender, EventArgs e)
         {
-            if (comboBoxSura.SelectedIndex > 0) comboBoxSura.SelectedIndex -= 1;
+            //if (comboBoxSura.SelectedIndex > 0) comboBoxSura.SelectedIndex -= 1;
+            if (SureListBox.SelectedIndex > 0) SureListBox.SelectedIndex -= 1;
 
         }
 
         private void btnNextAya_Click(object sender, EventArgs e)
         {
-            if (comboBoxAya.SelectedIndex < comboBoxAya.Items.Count - 1) comboBoxAya.SelectedIndex += 1;
+            //if (comboBoxAya.SelectedIndex < comboBoxAya.Items.Count - 1) comboBoxAya.SelectedIndex += 1;
 
         }
 
         private void btnPrevAya_Click(object sender, EventArgs e)
         {
-            if (comboBoxAya.SelectedIndex > 0) comboBoxAya.SelectedIndex -= 1;
+            //if (comboBoxAya.SelectedIndex > 0) comboBoxAya.SelectedIndex -= 1;
 
         }
 
@@ -241,19 +250,21 @@ namespace Quran
             //        break;
 
             //}
-            Load_Document();
+            //Load_Document();
 
-            setSelectedAyah(comboBoxAya.Text.GetHashCode());
+            //setSelectedAyah(comboBoxAya.Text.GetHashCode());
 
         }
 
         private void groupBox1_Resize(object sender, EventArgs e)
         {
-            panel1.Width = (groupBox1.Width / 2) - panel1.Left;
-            panel2.Width = panel1.Width - panel1.Left;
-            panel2.Left = panel1.Width + panel1.Left * 2;
+            //panel1.Width = (groupBox1.Width / 2) - panel1.Left;
+            //panel2.Width = panel1.Width - panel1.Left;
+            //panel2.Left = panel1.Width + panel1.Left * 2;
             groupBox1.Refresh();
-            groupBox2.Refresh();
+            //groupBox2.Refresh();
+            SureListBox.Left = groupBox1.Left + 3;
+            SureListBox.Width = groupBox1.Width - 23;
             //groupBox3.Refresh();
             //groupBox4.Refresh();
 
@@ -273,30 +284,31 @@ namespace Quran
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            axWMP.settings.volume = trackBar1.Value;
+            //axWMP.settings.volume = trackBar1.Value;
 
         }
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            timerPlayback.Enabled = true;
+            //timerPlayback.Enabled = true;
 
-            isPlaying = true;
+            //isPlaying = true;
 
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            isPlaying = false;
-            timerPlayback.Enabled = false;
-            axWMP.Ctlcontrols.stop();
+            //isPlaying = false;
+            //timerPlayback.Enabled = false;
+            //axWMP.Ctlcontrols.stop();
 
         }
 
         private void timerLoadDocument_Tick(object sender, EventArgs e)
         {
             timerLoadDocument.Enabled = false;
-            CreateDocument(comboBoxSura.SelectedIndex + 1);
+            //CreateDocument(comboBoxSura.SelectedIndex + 1);
+            CreateDocument(SureListBox.SelectedIndex + 1);
 
         }
 
@@ -434,13 +446,14 @@ namespace Quran
         private void button1_Click_1(object sender, EventArgs e)
         {
             //Registry.SetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "jk", "9");
-            this.Text = Registry.GetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "jk", "5").ToString();
+            this.Text = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "jk", "5").ToString();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Registry.SetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentSura", comboBoxSura.SelectedIndex);
-            Registry.SetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentAyah", comboBoxAya.SelectedIndex);
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "CurrentSura", SureListBox.SelectedIndex);
+            //Registry.SetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentSura", comboBoxSura.SelectedIndex);
+            //Registry.SetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "CurrentAyah", comboBoxAya.SelectedIndex);
 
         }
 
@@ -454,13 +467,54 @@ namespace Quran
         private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Settings().ShowDialog();
+            ApplyTheme();
             Load_Document();
-            setSelectedAyah(comboBoxAya.Text.GetHashCode());
+            //setSelectedAyah(comboBoxAya.Text.GetHashCode());
+        }
+
+        private void ApplyTheme()
+        {
+            string kuranBgColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBgColor", "#D3E9D3").ToString();
+            //string kuranBorderColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBorderColor", "#628F62").ToString();
+            //string kuranSelColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranSelColor", "darkgreen").ToString();
+            //string kuranForeColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranForeColor", "Black").ToString();
+            string currentTheme = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "currentTheme", "Light").ToString();
+            //BackColor = this.splitContainer1.Panel1.BackColor = this.menuStrip1.BackColor = ColorTranslator.FromHtml(kuranBgColor);
+            switch (currentTheme)
+            {
+                case "Green": this.BackgroundImage = Image.FromFile(@"Images\bggreen.png"); break;
+                case "Rose": this.BackgroundImage = Image.FromFile(@"Images\bgpurple.png"); break;
+                case "Blue": this.BackgroundImage = Image.FromFile(@"Images\bgblue.jpg"); break;
+                case "Gray": this.BackgroundImage = Image.FromFile(@"Images\bggray.jpg"); break;
+                case "Material Blue": this.BackgroundImage = Image.FromFile(@"Images\bgmaterialblue.png"); break;
+                default:this.BackgroundImage = null;
+                    break;
+            }
+            if (this.BackgroundImage==null)
+            {
+                this.BackColor = splitContainer1.Panel1.BackColor = menuStrip1.BackColor = ColorTranslator.FromHtml(kuranBgColor);
+            }
         }
 
         private void FindToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Find().ShowDialog();
+        }
+
+        private void SureListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Load_Document();
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void DBFixerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DBFixer window = new DBFixer();
+            window.Show();
         }
     }
 }

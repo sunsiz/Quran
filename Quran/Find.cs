@@ -20,7 +20,8 @@ namespace Quran
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            this.Text = Registry.GetValue(@"HKEY_CURRENT_USER\Software\DFA Tech\Quran", "jk", "5").ToString();
+            //this.Text = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "jk", "5").ToString();
+            
         }
     }
 }

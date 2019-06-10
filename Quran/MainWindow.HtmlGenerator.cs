@@ -17,6 +17,11 @@ namespace Quran
 
             var selectedSura = QuranData.Metadata.Sura[intSuraNo - 1];
 
+            string kuranBgColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBgColor", "#D3E9D3").ToString();
+            string kuranBorderColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranBorderColor", "#628F62").ToString();
+            string kuranSelColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranSelColor", "darkgreen").ToString();
+            string kuranForeColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranForeColor", "Black").ToString();
+            string kuranHeadColor = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "kuranHeadColor", "White").ToString();
             string strLanguages = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Suleymaniye Vakfi Meali\Kuran", "strLanguage", "True_True_True_False").ToString();
             var langs = strLanguages.Split('_');
 
@@ -26,7 +31,7 @@ namespace Quran
 
             string SuraName_Uyghur = bool.Parse(langs[2]) ?  selectedSura.EName + " | " : "";
 
-            string SuraName_Bangla = bool.Parse(langs[3]) ?  selectedSura.TName + " | " : "";
+            string SuraName_Turkish = bool.Parse(langs[3]) ?  selectedSura.TName + " | " : "";
 
             //string SuraName_Arabic = checkedListBox1.GetItemChecked(0) ?
             //    selectedSura.Name : "";
@@ -49,7 +54,8 @@ namespace Quran
             sb.AppendLine(@"<!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
 <html xmlns=""http://www.w3.org/1999/xhtml"" >
 <head>
-    <title>Untitled Page</title>
+    <title>Quran Kerim</title>
+    <meta http-equiv='X-UA-Compatible' content='IE=11' >
     <style type=""text/css"">
         .tdAyah
         {
@@ -62,12 +68,17 @@ namespace Quran
         	direction:rtl;
             text-align:justify;
             font-size:30px;
-            font-family:me_quran;
+            font-family:Calibri;
+            text-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
         }
         .divTrans
         {
             text-align:justify;
-            font-family:bangla;
+            font-family:Calibri;
+            text-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
+        }
+        .divTrans a{
+            color:" + kuranForeColor + @";
         }
         .divUgTrans
         {
@@ -79,53 +90,51 @@ namespace Quran
         .divRuku
         {
             text-align:center;
-            font-family:bangla;
+            font-family:Calibri;
             padding: 20px;
 
         }
         .tdAyahNo
         {
         	direction:rtl;
-            color:" + kuranBgColor + @";
+            color:" + kuranHeadColor + @";
             background-color:" + kuranBorderColor + @";
             text-align:center;
-            font-family:me_quran;
+            font-family:Calibri;
             width:60px;
-
+            text-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
 
         }
+        p{font-weight:lighter;font-size: smaller;text-shadow:none;}
     </style>
 
     <script type=""text/javascript"">
     function goWaitState(){
-    divWait.style.display=""block"";
+    divWait.style.display=""block"";location.reload();
     }
 
     </script>
 </head>
-<body style='background-color:" + kuranBgColor + @"; margin:10px'>
+<body style='background-color:" + kuranBgColor + @";color:" + kuranForeColor + @"; margin:1px;'>
 <div id='divWait' 
-style='position:fixed; display:none; color:White; font-size:35px; text-align:center;'>
+style='position:fixed; display:none; color:" + kuranForeColor + @"; font-size:35px; text-align:center;'>
 Please Wait...</div>
 
 <table width='100%'
 style='background-position: center; 
 margin: 0px; font-size:25px; 
-border:solid 5px " + kuranBorderColor + @"; 
-border-collapse:collapse; 
-background-image: url(""" + strAppURL + @"/zekr-bg.png""); 
-background-repeat: no-repeat; 
-background-attachment: fixed;'>
+border:solid 1px " + kuranBorderColor + @"; 
+border-collapse:collapse;'>
 
 <tr><td colspan='2'
-style='color:white;
+style='color:" + kuranHeadColor + @";
 background-color:" + kuranBorderColor + @";
-text-align:center;
+text-align:center;text-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
 padding-bottom:10px; height:49;'>
-<span style='font-family:bangla; font-size:35px;'>"
-                   + (intSuraNo).ToString() + ". " + SuraName_Bangla + SuraName_English + SuraName_Uyghur + @"</span>
+<span style='font-family:Calibri; font-size:35px;'>"
+                   + (intSuraNo).ToString() + ". " + SuraName_Turkish + SuraName_English + SuraName_Uyghur + @"</span>
 <span style='font-family:me_quran;  font-size:35px;'>" + SuraName_Arabic + @"</span><br />
-<span style='font-family:bangla; color:" + kuranBgColor + @"; font-size:20px;'>
+<span style='font-family:Calibri; color:" + kuranHeadColor + @"; font-size:20px;'>
 Descent: " + SuraType + @", 
 Ayah Count: " + AyaCount + @", 
 Relevation Order: " + RevelationOrder + @" </span></td></tr>
@@ -141,14 +150,17 @@ Relevation Order: " + RevelationOrder + @" </span></td></tr>
             string strUgDiv = bool.Parse(langs[2]) ?
                 "<div class='divUgTrans' style='text-align:center'>ياخشىلىقى چەكسىز، ئىنئامى كۆپ ئاللاھنىڭ ئىسمى بىلەن باشلايمەن.</div>"
                 : "";
-            string strBnDiv = bool.Parse(langs[3]) ?
-                "<div class='divTrans' style='text-align:center'>শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।</div>"
+            string strTrDiv = bool.Parse(langs[3]) ?
+                "<div class='divTrans' style='text-align:center'>İyiliği sonsuz, ikramı bol Allah’ın adıyla</div>"
                 : "";
+            //string strBnDiv = bool.Parse(langs[3]) ?
+            //    "<div class='divTrans' style='text-align:center'>শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।</div>"
+            //    : "";
 
             if (intSuraNo - 1 != 0 && intSuraNo - 1 != 8) //for not sura 1 and 9
                 if (bool.Parse(langs[0]))
                     sb.AppendLine(@"<tr><td class='tdAyah'>"
-                        + strArDiv + strBnDiv + strEnDiv + strUgDiv + @"</td>
+                        + strArDiv + strTrDiv + strEnDiv + strUgDiv + @"</td>
 <td id='tdAyahNo0_0' class='tdAyahNo'></td></tr>");
                 else
                     sb.AppendLine(@"<tr><td id='tdAyahNo0_0' class='tdAyahNo'></td>
@@ -158,7 +170,7 @@ Relevation Order: " + RevelationOrder + @" </span></td></tr>
             string strTrAya;
             string ArAyaNo;
             string[] quranArabicText = QuranData.GetTexts("quran-simple-enhanced");
-            string[] quranBanglaText = QuranData.GetTexts("bn.bengali");
+            string[] quranTurkishText = QuranData.GetTexts("tr.svk");
             string[] quranEnglishText = QuranData.GetTexts("en.sahih");
             string[] quranUyghurText = QuranData.GetTexts("ug.enes");
 
@@ -175,8 +187,8 @@ Relevation Order: " + RevelationOrder + @" </span></td></tr>
                 strUgDiv = bool.Parse(langs[2]) ?
                     "<div class='divUgTrans'>" + quranUyghurText[selectedSura.StartIndex + i] + @"</div>"
                     : "";
-                strBnDiv = bool.Parse(langs[3]) ?
-                    "<div class='divTrans'>" + quranBanglaText[selectedSura.StartIndex + i] + @"</div>"
+                strTrDiv = bool.Parse(langs[3]) ?
+                    "<div class='divTrans'>" + quranTurkishText[selectedSura.StartIndex + i] + @"</div>"
                     : "";
 
                 if (QuranData.Metadata.IsRukuStart(intSuraNo, i + 1))
@@ -188,7 +200,7 @@ Relevation Order: " + RevelationOrder + @" </span></td></tr>
                 {
                     ArAyaNo = ConverToArDigit(i + 1);
 
-                    strTrAya = @"<tr><td class='tdAyah'>" + strArDiv + strBnDiv + strEnDiv + strUgDiv + @"</td>
+                    strTrAya = @"<tr><td class='tdAyah'>" + strArDiv + strTrDiv + strEnDiv + strUgDiv + @"</td>
 <td title='"
                         + selectedSura.EName + "-"
                         + (i + 1)
@@ -199,12 +211,12 @@ Relevation Order: " + RevelationOrder + @" </span></td></tr>
                 }
                 else
                     strTrAya = @"<tr><td title='"
-                        + selectedSura.EName + "-"
-                        + (intSuraNo - 1)
+                        + (intSuraNo) + " - "
+                        + selectedSura.EName
                         + "' id='tdAyahNo" + intSuraNo + "_" + (i + 1)
                         + "' class='tdAyahNo'>&nbsp"
-                        + i + 1 + @"&nbsp</td>
-                    <td class='tdAyah'>" + strArDiv + strBnDiv + strEnDiv + strUgDiv + @"</td></tr>
+                        + ( i + 1 ) + @"&nbsp</td>
+                    <td class='tdAyah'>" + strArDiv + strTrDiv + strEnDiv + strUgDiv + @"</td></tr>
 ";
 
                 sb.AppendLine(strTrAya);
